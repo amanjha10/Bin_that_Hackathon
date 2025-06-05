@@ -1,141 +1,423 @@
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+// Contact Form JavaScript - Enhanced Version
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
+document.addEventListener('DOMContentLoaded', function() {
+    initializeContactForm();
+    initializeFileUpload();
+    initializeFormValidation();
+    initializeCharacterCount();
+    console.log('Contact form initialized successfully!');
 });
 
-// Close mobile menu when clicking on a nav link
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+// Main contact form initialization
+function initializeContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formStatus = document.getElementById('formStatus');
 
-// Smooth Scrolling for Navigation Links
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', (e) => {
+    if (!contactForm) return;
+
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
         
-        if (targetSection) {
-            const offsetTop = targetSection.getBoundingClientRect().top + window.pageYOffset - 70;
-            
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
+        if (!validateForm()) {
+            return;
         }
+
+        await handleFormSubmission();
     });
-});
+}
 
-// Active Navigation Link Highlighting
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-link');
+// Form validation
+function initializeFormValidation() {
+    const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
     
-    let currentSection = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if (sectionTop <= 100) {
-            currentSection = section.getAttribute('id');
-        }
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', validateField);
+        field.addEventListener('input', clearFieldError);
     });
+}
+
+function validateField(e) {
+    const field = e.target;
+    const fieldGroup = field.closest('.form-group');
     
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${currentSection}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Service Card Animation on Scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe service cards and bin cards
-document.querySelectorAll('.service-card, .bin-card').forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(card);
-});
-
-// Contact Form Handling
-const contactForm = document.querySelector('.contact-form');
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    // Remove existing error
+    clearFieldError(e);
     
-    // Get form data
-    const formData = new FormData(contactForm);
-    const name = contactForm.querySelector('input[type="text"]').value;
-    const email = contactForm.querySelector('input[type="email"]').value;
-    const phone = contactForm.querySelector('input[type="tel"]').value;
-    const message = contactForm.querySelector('textarea').value;
+    let isValid = true;
+    let errorMessage = '';
     
-    // Simple validation
-    if (!name || !email || !message) {
-        showNotification('Please fill in all required fields.', 'error');
-        return;
+    // Check if field is empty
+    if (!field.value.trim()) {
+        isValid = false;
+        errorMessage = 'This field is required.';
     }
     
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showNotification('Please enter a valid email address.', 'error');
-        return;
+    if (field.type === 'email' && field.value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(field.value)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid email address.';
+        }
     }
     
-    // Simulate form submission
-    const submitButton = contactForm.querySelector('.submit-button');
-    const originalText = submitButton.textContent;
-    submitButton.textContent = 'Sending...';
-    submitButton.disabled = true;
+    // Phone validation (basic)
+    if (field.type === 'tel' && field.value.trim()) {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        if (!phoneRegex.test(field.value.replace(/[\s\-\(\)]/g, ''))) {
+            isValid = false;
+            errorMessage = 'Please enter a valid phone number.';
+        }
+    }
     
+    if (!isValid) {
+        showFieldError(field, errorMessage);
+    }
+    
+    return isValid;
+}
+
+function clearFieldError(e) {
+    const field = e.target;
+    const fieldGroup = field.closest('.form-group');
+    const existingError = fieldGroup.querySelector('.field-error');
+    
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    field.style.borderColor = '#ecf0f1';
+}
+
+function showFieldError(field, message) {
+    const fieldGroup = field.closest('.form-group');
+    
+    // Create error element
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.style.cssText = `
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    `;
+    errorDiv.innerHTML = `<span>⚠️</span> ${message}`;
+    
+    // Add error styling to field
+    field.style.borderColor = '#e74c3c';
+    
+    // Insert error message
+    fieldGroup.appendChild(errorDiv);
+}
+
+function validateForm() {
+    const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+    let isFormValid = true;
+    
+    requiredFields.forEach(field => {
+        const fieldValid = validateField({ target: field });
+        if (!fieldValid) {
+            isFormValid = false;
+        }
+    });
+    
+    // Check if at least one contact method is selected
+    const contactMethods = document.querySelectorAll('input[name="contactMethod"]:checked');
+    if (contactMethods.length === 0) {
+        showNotification('Please select at least one preferred contact method.', 'error');
+        isFormValid = false;
+    }
+    
+    return isFormValid;
+}
+
+// File upload functionality
+function initializeFileUpload() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('photoUpload');
+    const uploadedFilesContainer = document.getElementById('uploadedFiles');
+    
+    if (!uploadArea || !fileInput) return;
+    
+    let uploadedFiles = [];
+    const maxFiles = 5;
+    const maxFileSize = 10 * 1024 * 1024; // 10MB in bytes
+    
+    // Click to upload
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        handleFileSelection(e.target.files);
+    });
+    
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        handleFileSelection(e.dataTransfer.files);
+    });
+    
+    function handleFileSelection(files) {
+        const filesArray = Array.from(files);
+        
+        // Check total file limit
+        if (uploadedFiles.length + filesArray.length > maxFiles) {
+            showNotification(`You can only upload a maximum of ${maxFiles} files.`, 'error');
+            return;
+        }
+        
+        filesArray.forEach(file => {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showNotification(`${file.name} is not a valid image file.`, 'error');
+                return;
+            }
+            
+            // Validate file size
+            if (file.size > maxFileSize) {
+                showNotification(`${file.name} is too large. Maximum size is 10MB.`, 'error');
+                return;
+            }
+            
+            // Add file to uploaded files
+            uploadedFiles.push(file);
+            displayUploadedFile(file);
+        });
+        
+        updateFileInput();
+    }
+    
+    function displayUploadedFile(file) {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.dataset.fileName = file.name;
+        
+        // Create thumbnail for image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <img src="${e.target.result}" alt="${file.name}" class="file-icon">
+                    <div class="file-details">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                </div>
+                <button type="button" class="file-remove" title="Remove file">×</button>
+            `;
+            
+            // Add remove functionality
+            const removeBtn = fileItem.querySelector('.file-remove');
+            removeBtn.addEventListener('click', () => {
+                removeUploadedFile(file.name);
+                fileItem.remove();
+            });
+            
+            uploadedFilesContainer.appendChild(fileItem);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function removeUploadedFile(fileName) {
+        uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+        updateFileInput();
+    }
+    
+    function updateFileInput() {
+        // Update upload area text
+        const uploadText = uploadArea.querySelector('.upload-text strong');
+        if (uploadedFiles.length === 0) {
+            uploadText.textContent = 'Click to upload';
+        } else {
+            uploadText.textContent = `Add more files (${uploadedFiles.length}/${maxFiles})`;
+        }
+        
+        // Disable upload area if max files reached
+        if (uploadedFiles.length >= maxFiles) {
+            uploadArea.style.opacity = '0.5';
+            uploadArea.style.pointerEvents = 'none';
+            uploadText.textContent = 'Maximum files reached';
+        } else {
+            uploadArea.style.opacity = '1';
+            uploadArea.style.pointerEvents = 'auto';
+        }
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+}
+
+// Character count functionality
+function initializeCharacterCount() {
+    const messageTextarea = document.getElementById('message');
+    const charCountSpan = document.getElementById('charCount');
+    const maxChars = 1000;
+    
+    if (!messageTextarea || !charCountSpan) return;
+    
+    messageTextarea.addEventListener('input', function() {
+        const currentLength = this.value.length;
+        charCountSpan.textContent = currentLength;
+        
+        // Change color based on character count
+        if (currentLength > maxChars * 0.9) {
+            charCountSpan.style.color = '#e74c3c';
+        } else if (currentLength > maxChars * 0.7) {
+            charCountSpan.style.color = '#f39c12';
+        } else {
+            charCountSpan.style.color = '#666';
+        }
+        
+        // Prevent exceeding max characters
+        if (currentLength > maxChars) {
+            this.value = this.value.substring(0, maxChars);
+            charCountSpan.textContent = maxChars;
+            showNotification('Maximum character limit reached.', 'warning');
+        }
+    });
+}
+
+// Form submission handler
+async function handleFormSubmission() {
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoader = submitBtn.querySelector('.btn-loader');
+    const formStatus = document.getElementById('formStatus');
+    
+    // Show loading state
+    btnText.style.display = 'none';
+    btnLoader.style.display = 'flex';
+    submitBtn.disabled = true;
+    
+    try {
+        // Collect form data
+        const formData = collectFormData();
+        
+        // Simulate form submission (replace with actual API call)
+        await simulateFormSubmission(formData);
+        
+        // Show success message
+        showFormStatus('success', 'Thank you for your message! We\'ll get back to you within 24 hours.');
+        resetForm();
+        
+    } catch (error) {
+        console.error('Form submission error:', error);
+        showFormStatus('error', 'Sorry, there was an error sending your message. Please try again.');
+    } finally {
+        // Reset button state
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+    }
+}
+
+function collectFormData() {
+    const form = document.getElementById('contactForm');
+    const formData = new FormData(form);
+    
+    // Add uploaded files
+    const uploadedFiles = document.querySelectorAll('.file-item');
+    uploadedFiles.forEach((item, index) => {
+        const fileName = item.dataset.fileName;
+        // In a real application, you would add the actual file data here
+        formData.append(`uploadedFile_${index}`, fileName);
+    });
+    
+    // Convert FormData to object for easier handling
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        if (data[key]) {
+            // Handle multiple values (like contact methods)
+            if (Array.isArray(data[key])) {
+                data[key].push(value);
+            } else {
+                data[key] = [data[key], value];
+            }
+        } else {
+            data[key] = value;
+        }
+    }
+    
+    return data;
+}
+
+async function simulateFormSubmission(formData) {
+    // Simulate API call delay
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // Simulate random success/failure for demo
+            if (Math.random() > 0.1) { // 90% success rate
+                resolve({ success: true, id: Date.now() });
+            } else {
+                reject(new Error('Simulated server error'));
+            }
+        }, 2000);
+    });
+}
+
+function showFormStatus(type, message) {
+    const formStatus = document.getElementById('formStatus');
+    formStatus.className = `form-status ${type}`;
+    formStatus.textContent = message;
+    formStatus.style.display = 'block';
+    
+    // Auto-hide after 10 seconds
     setTimeout(() => {
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
-        contactForm.reset();
-        showNotification('Thank you for your message! We\'ll get back to you soon.', 'success');
-    }, 2000);
-});
+        formStatus.style.display = 'none';
+    }, 10000);
+}
 
-// Service Card Learn More Buttons
-document.querySelectorAll('.card-button').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const serviceCard = e.target.closest('.service-card');
-        const serviceName = serviceCard.querySelector('h3').textContent;
-        showNotification(`Learn more about ${serviceName} - Coming soon!`, 'info');
-    });
-});
-
-// CTA Button Action
-document.querySelector('.cta-button').addEventListener('click', () => {
-    const contactSection = document.querySelector('#contact');
-    const offsetTop = contactSection.getBoundingClientRect().top + window.pageYOffset - 70;
+function resetForm() {
+    const form = document.getElementById('contactForm');
+    form.reset();
     
-    window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
+    // Reset file uploads
+    const uploadedFilesContainer = document.getElementById('uploadedFiles');
+    uploadedFilesContainer.innerHTML = '';
+    
+    // Reset upload area
+    const uploadArea = document.getElementById('uploadArea');
+    const uploadText = uploadArea.querySelector('.upload-text strong');
+    uploadText.textContent = 'Click to upload';
+    uploadArea.style.opacity = '1';
+    uploadArea.style.pointerEvents = 'auto';
+    
+    // Reset character count
+    const charCountSpan = document.getElementById('charCount');
+    if (charCountSpan) {
+        charCountSpan.textContent = '0';
+        charCountSpan.style.color = '#666';
+    }
+    
+    // Clear any field errors
+    document.querySelectorAll('.field-error').forEach(error => error.remove());
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+        field.style.borderColor = '#ecf0f1';
     });
-});
+}
 
-// Notification System
+// Notification system (reused from main script)
 function showNotification(message, type = 'info') {
     // Remove existing notifications
     const existingNotification = document.querySelector('.notification');
@@ -148,10 +430,10 @@ function showNotification(message, type = 'info') {
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <span>${message}</span>
-        <button class="notification-close">&times;</button>
+        <button class="notification-close" aria-label="Close notification">&times;</button>
     `;
     
-    // Add styles
+    // Set styles
     const styles = {
         position: 'fixed',
         top: '20px',
@@ -165,25 +447,21 @@ function showNotification(message, type = 'info') {
         alignItems: 'center',
         gap: '10px',
         minWidth: '300px',
+        maxWidth: '400px',
         boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)',
         transform: 'translateX(100%)',
         transition: 'transform 0.3s ease'
     };
     
     // Set background color based on type
-    switch (type) {
-        case 'success':
-            styles.backgroundColor = '#27ae60';
-            break;
-        case 'error':
-            styles.backgroundColor = '#e74c3c';
-            break;
-        case 'info':
-            styles.backgroundColor = '#3498db';
-            break;
-        default:
-            styles.backgroundColor = '#95a5a6';
-    }
+    const colors = {
+        success: '#27ae60',
+        error: '#e74c3c',
+        warning: '#f39c12',
+        info: '#3498db'
+    };
+    
+    styles.backgroundColor = colors[type] || colors.info;
     
     // Apply styles
     Object.assign(notification.style, styles);
@@ -206,206 +484,113 @@ function showNotification(message, type = 'info') {
         cursor: pointer;
         padding: 0;
         margin-left: auto;
+        line-height: 1;
     `;
     
-    closeButton.addEventListener('click', () => {
+    const closeNotification = () => {
         notification.style.transform = 'translateX(100%)';
-        setTimeout(() => notification.remove(), 300);
-    });
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    };
+    
+    closeButton.addEventListener('click', closeNotification);
     
     // Auto remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => notification.remove(), 300);
+            closeNotification();
         }
     }, 5000);
 }
 
-// Counter Animation for Stats
-function animateCounter(element, target, duration = 2000) {
-    let start = 0;
-    const increment = target / (duration / 16);
-    
-    const timer = setInterval(() => {
-        start += increment;
-        if (start >= target) {
-            element.textContent = target.toLocaleString() + (element.textContent.includes('%') ? '%' : '+');
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(start).toLocaleString() + (element.textContent.includes('%') ? '%' : '+');
-        }
-    }, 16);
+// Mobile menu functionality (if needed on contact page)
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking on a nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        });
+    });
 }
 
-// Trigger counter animation when stats section is visible
-const statsSection = document.querySelector('.stats');
-if (statsSection) {
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counters = entry.target.querySelectorAll('.stat h3');
-                counters.forEach(counter => {
-                    const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
-                    counter.textContent = '0';
-                    animateCounter(counter, target);
-                });
-                statsObserver.unobserve(entry.target);
+// Accessibility improvements
+document.addEventListener('keydown', (e) => {
+    // ESC key closes mobile menu and notifications
+    if (e.key === 'Escape') {
+        if (hamburger && navMenu) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+        
+        // Close notifications
+        const notification = document.querySelector('.notification');
+        if (notification) {
+            notification.querySelector('.notification-close').click();
+        }
+    }
+});
+
+// Form auto-save to prevent data loss (optional)
+function initializeAutoSave() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    
+    const formFields = form.querySelectorAll('input, select, textarea');
+    
+    formFields.forEach(field => {
+        // Load saved data
+        const savedValue = sessionStorage.getItem(`contact_form_${field.name}`);
+        if (savedValue && field.type !== 'file') {
+            if (field.type === 'checkbox' || field.type === 'radio') {
+                field.checked = savedValue === 'true';
+            } else {
+                field.value = savedValue;
+            }
+        }
+        
+        // Save data on change
+        field.addEventListener('input', () => {
+            if (field.type === 'checkbox' || field.type === 'radio') {
+                sessionStorage.setItem(`contact_form_${field.name}`, field.checked);
+            } else {
+                sessionStorage.setItem(`contact_form_${field.name}`, field.value);
             }
         });
-    }, { threshold: 0.5 });
-    
-    statsObserver.observe(statsSection);
+    });
 }
 
-// Parallax Effect for Hero Section
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    const heroPlaceholder = document.querySelector('.hero-placeholder');
-    
-    if (hero && heroPlaceholder) {
-        const rate = scrolled * -0.5;
-        heroPlaceholder.style.transform = `translateY(${rate}px)`;
-    }
-});
-
-// Search Functionality (for future implementation)
-function initializeSearch() {
-    // This can be expanded later for site-wide search
-    console.log('Search functionality ready for implementation');
-}
-
-// Accessibility Improvements
-document.addEventListener('keydown', (e) => {
-    // ESC key closes mobile menu
-    if (e.key === 'Escape') {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-    }
-    
-    // Enter key on hamburger menu
-    if (e.key === 'Enter' && e.target === hamburger) {
-        hamburger.click();
-    }
-});
-
-// Focus management for mobile menu
-hamburger.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        hamburger.click();
-    }
-});
-
-// Waste Calculator (Interactive Feature)
-function createWasteCalculator() {
-    const calculatorHTML = `
-        <div class="waste-calculator" style="
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin: 30px 0;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        ">
-            <h3 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">
-                Weekly Waste Calculator
-            </h3>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #666;">
-                    Household Members:
-                </label>
-                <input type="number" id="members" min="1" max="20" value="4" style="
-                    width: 100%;
-                    padding: 10px;
-                    border: 2px solid #ecf0f1;
-                    border-radius: 5px;
-                ">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #666;">
-                    Waste Reduction Goal (%):
-                </label>
-                <input type="range" id="reduction" min="0" max="50" value="20" style="width: 100%;">
-                <span id="reductionValue" style="color: #27ae60; font-weight: bold;">20%</span>
-            </div>
-            <button onclick="calculateWaste()" style="
-                background: linear-gradient(135deg, #27ae60, #2ecc71);
-                color: white;
-                padding: 12px 24px;
-                border: none;
-                border-radius: 25px;
-                cursor: pointer;
-                width: 100%;
-                font-size: 16px;
-            ">
-                Calculate Impact
-            </button>
-            <div id="calculatorResult" style="margin-top: 20px; text-align: center;"></div>
-        </div>
-    `;
-    
-    // Add calculator to awareness section
-    const awarenessSection = document.querySelector('.awareness .container');
-    if (awarenessSection) {
-        awarenessSection.insertAdjacentHTML('beforeend', calculatorHTML);
-        
-        // Update reduction value display
-        const reductionSlider = document.getElementById('reduction');
-        const reductionValue = document.getElementById('reductionValue');
-        
-        reductionSlider.addEventListener('input', (e) => {
-            reductionValue.textContent = e.target.value + '%';
-        });
-    }
-}
-
-// Calculate waste impact
-function calculateWaste() {
-    const members = parseInt(document.getElementById('members').value) || 4;
-    const reduction = parseInt(document.getElementById('reduction').value) || 20;
-    
-    const avgWastePerPerson = 4.5; // kg per week
-    const totalWaste = members * avgWastePerPerson;
-    const reducedWaste = totalWaste * (reduction / 100);
-    const newTotal = totalWaste - reducedWaste;
-    const yearlyReduction = reducedWaste * 52;
-    
-    const resultHTML = `
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 15px;">
-            <h4 style="color: #2c3e50; margin-bottom: 15px;">Your Impact:</h4>
-            <p style="margin: 8px 0; color: #666;">
-                <strong>Current weekly waste:</strong> ${totalWaste.toFixed(1)} kg
-            </p>
-            <p style="margin: 8px 0; color: #666;">
-                <strong>Reduced weekly waste:</strong> ${newTotal.toFixed(1)} kg
-            </p>
-            <p style="margin: 8px 0; color: #27ae60; font-weight: bold;">
-                <strong>Yearly reduction:</strong> ${yearlyReduction.toFixed(1)} kg
-            </p>
-            <p style="margin: 8px 0; color: #27ae60; font-size: 14px;">
-                That's equivalent to ${Math.floor(yearlyReduction / 25)} bags of waste saved!
-            </p>
-        </div>
-    `;
-    
-    document.getElementById('calculatorResult').innerHTML = resultHTML;
-}
-
-// Initialize all features when DOM is loaded
+// Initialize auto-save
 document.addEventListener('DOMContentLoaded', () => {
-    initializeSearch();
-    createWasteCalculator();
-    
-    // Add loading animation completion
-    document.body.style.opacity = '0';
-    setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-    }, 100);
-    
-    console.log('EcoWaste Management website loaded successfully!');
+    initializeAutoSave();
 });
+
+// Clear auto-saved data when form is successfully submitted
+function clearAutoSavedData() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    
+    const formFields = form.querySelectorAll('input, select, textarea');
+    formFields.forEach(field => {
+        sessionStorage.removeItem(`contact_form_${field.name}`);
+    });
+}
+
+// Export functions for potential use in other scripts
+window.ContactForm = {
+    showNotification,
+    validateForm,
+    resetForm,
+    clearAutoSavedData
+};

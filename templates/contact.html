@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - EcoWaste Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/contact.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🌱 EcoWaste</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#services" class="nav-link">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#awareness" class="nav-link">Public Awareness</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link active">Contact</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> > <span>Contact Us</span>
+            </div>
+            <h1>Get In Touch</h1>
+            <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="contact-layout">
+                <!-- Contact Information -->
+                <div class="contact-info-card">
+                    <h2>Contact Information</h2>
+                    <p>Fill out the form and our team will get back to you within 24 hours.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <div class="contact-icon">📱</div>
+                            <div class="contact-text">
+                                <h4>Phone</h4>
+                                <p>+977 9818556437</p>
+                                <p>+977 9741024267</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">✉️</div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>info@ecowaste.com</p>
+                                <p>support@ecowaste.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-text">
+                                <h4>Address</h4>
+                                <p>123 Green Street<br>Eco City, EC 12345<br>United States</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">🕒</div>
+                            <div class="contact-text">
+                                <h4>Working Hours</h4>
+                                <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
+                                <p>Saturday: 9:00 AM - 4:00 PM</p>
+                                <p>Sunday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-media">
+                        <h4>Follow Us</h4>
+                        <div class="social-links">
+                            <a href="#" class="social-link">📘 Facebook</a>
+                            <a href="#" class="social-link">🐦 Twitter</a>
+                            <a href="#" class="social-link">📷 Instagram</a>
+                            <a href="#" class="social-link">💼 LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="contact-form-card">
+                    <form class="advanced-contact-form" id="contactForm">
+                        <div class="form-header">
+                            <h2>Send us a Message</h2>
+                            <p>We're here to help with all your waste management needs</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="residential">Residential Services</option>
+                                <option value="commercial">Commercial Services</option>
+                                <option value="recycling">Recycling Programs</option>
+                                <option value="composting">Organic Composting</option>
+                                <option value="complaint">Service Complaint</option>
+                                <option value="billing">Billing Inquiry</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Your Message *</label>
+                            <textarea id="message" name="message" rows="6" placeholder="Please describe your inquiry in detail..." required></textarea>
+                            <div class="character-count">
+                                <span id="charCount">0</span>/1000 characters
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload Section -->
+                        <div class="form-group photo-upload-section">
+                            <label for="photoUpload">Attach Photos (Optional)</label>
+                            <p class="upload-description">You can upload photos related to your inquiry (Max 5 files, 10MB each)</p>
+                            
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <div class="upload-icon">📸</div>
+                                    <p class="upload-text">
+                                        <strong>Click to upload</strong> or drag and drop
+                                    </p>
+                                    <p class="upload-formats">PNG, JPG, JPEG up to 10MB each</p>
+                                </div>
+                                <input type="file" id="photoUpload" name="photos" multiple accept="image/*" hidden>
+                            </div>
+                            
+                            <div class="uploaded-files" id="uploadedFiles"></div>
+                        </div>
+
+                        <!-- Priority Level -->
+                        <div class="form-group">
+                            <label class="priority-label">Priority Level</label>
+                            <div class="priority-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="priority" value="low" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">Low</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="priority" value="medium">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">Medium</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="priority" value="high">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">High</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="priority" value="urgent">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">Urgent</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Preferred Contact Method -->
+                        <div class="form-group">
+                            <label>Preferred Contact Method</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" name="contactMethod" value="email" checked>
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">Email</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" name="contactMethod" value="phone">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">Phone</span>
+                                </label>
+                                <label class="checkbox-option">
+                                    <input type="checkbox" name="contactMethod" value="sms">
+                                    <span class="checkbox-custom"></span>
+                                    <span class="checkbox-text">SMS</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Newsletter Subscription -->
+                        <div class="form-group newsletter-section">
+                            <label class="checkbox-option newsletter-option">
+                                <input type="checkbox" name="newsletter" value="yes">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-text">
+                                    Subscribe to our newsletter for waste management tips and updates
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span class="btn-text">Send Message</span>
+                            <div class="btn-loader" style="display: none;">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+
+                        <!-- Form Status -->
+                        <div class="form-status" id="formStatus"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Contact Section -->
+    <section class="emergency-contact">
+        <div class="container">
+            <div class="emergency-card">
+                <div class="emergency-icon">🚨</div>
+                <div class="emergency-content">
+                    <h3>Emergency Waste Services</h3>
+                    <p>For urgent waste management needs or hazardous material disposal</p>
+                    <a href="tel:01-4372725 " class="emergency-btn">Call Emergency Line: +1 (555) 123-4567</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🌱 EcoWaste</h3>
+                    <p>Sustainable waste management for a better tomorrow.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#awareness">Awareness</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Residential</a></li>
+                        <li><a href="#">Commercial</a></li>
+                        <li><a href="#">Recycling</a></li>
+                        <li><a href="#">Composting</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="#">Facebook</a>
+                        <a href="#">Twitter</a>
+                        <a href="#">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EcoWaste Management. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../javascript/script.js"></script>
+    <!-- <script src="contact-script.js"></script> -->
+</body>
+</html>
